@@ -39,9 +39,9 @@ const userSchema = new mongoose.Schema({
       60: { wpm: Number, accuracy: Number, date: Date },
     },
     quotes: {
-      15: { wpm: Number, accuracy: Number, date: Date },
-      30: { wpm: Number, accuracy: Number, date: Date },
-      60: { wpm: Number, accuracy: Number, date: Date },
+      wpm: Number, 
+      accuracy: Number, 
+      date: Date 
     },
   },
 });

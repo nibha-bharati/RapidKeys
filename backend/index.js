@@ -8,6 +8,7 @@ import userRoutes from './routes/user_route.js';
 import testTypeRoutes from './routes/test_type_route.js'
 
 import testRoutes from './routes/test_route.js';
+import wordRoutes from "./routes/word_route.js"
 
 //creating express object
 
@@ -29,6 +30,7 @@ app.use(bodyParser.json())
 app.use('/users',userRoutes);
 app.use('/test-type',testTypeRoutes);
 app.use('/tests',testRoutes);
+app.use('/word',wordRoutes)
 
 //server
 const PORT=process.env.PORT;

@@ -32,10 +32,16 @@ const userSchema = new mongoose.Schema({
     type: Number,
   },
   bestSpeeds: {
-    words: {
+    time: {
       15: { wpm: Number, accuracy: Number, date: Date },
       30: { wpm: Number, accuracy: Number, date: Date },
       60: { wpm: Number, accuracy: Number, date: Date },
+    },
+    words: {
+      10: { wpm: Number, accuracy: Number, date: Date },
+      25: { wpm: Number, accuracy: Number, date: Date },
+      50: { wpm: Number, accuracy: Number, date: Date },
+      100: { wpm: Number, accuracy: Number, date: Date },
     },
     quotes: {
       wpm: Number, 

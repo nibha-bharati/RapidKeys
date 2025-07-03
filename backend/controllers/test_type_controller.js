@@ -28,3 +28,50 @@ export const createTestTypeController = async (req, res) => {
     });
   }
 };
+
+export const getTestTypeController=async(req,res)=>{
+    try{
+        const testType= await TestType.findById(req.params.id);
+        res.json({testType});
+     } catch (error) {
+        console.log(error);
+        res.status(500).json({
+          success: false,
+          message: "Internal Server Error",
+        });
+      }
+}
+export const updateTestTypeController = async (req, res) => {
+    try {
+      const id = req.params.id; 
+      const { newTestType } = req.body;
+  
+      const existingTestType = await TestType.findById(id);
+  
+      if (!existingTestType) {
+        return res.status(404).json({
+          success: false,
+          message: "Test Type not found",
+        });
+      }
+  
+      const updatedTestType = await TestType.findByIdAndUpdate(
+        id,
+        req.body,  
+        { new: true }               
+      );
+  
+      res.status(200).json({
+        success: true,
+        message: "Test Type Updated Successfully",
+        testType: updatedTestType,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+      });
+    }
+  };
+  

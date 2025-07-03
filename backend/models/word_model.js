@@ -6,5 +6,5 @@ const wordSchema = new mongoose.Schema({
     required: true
   }
 });
-const Word = new mongoose.model("Quote", wordSchema);
+const Word = new mongoose.model("Word", wordSchema);
 export default Word;

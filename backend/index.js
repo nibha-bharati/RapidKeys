@@ -7,6 +7,7 @@ dotenv.config();
 import userRoutes from './routes/user_route.js';
 import testTypeRoutes from './routes/test_type_route.js'
 
+import testRoutes from './routes/test_route.js';
 
 //creating express object
 
@@ -27,6 +28,7 @@ app.get("/",(req,res)=>{
 app.use(bodyParser.json())
 app.use('/users',userRoutes);
 app.use('/test-type',testTypeRoutes);
+app.use('/tests',testRoutes);
 
 //server
 const PORT=process.env.PORT;

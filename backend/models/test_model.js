@@ -12,10 +12,12 @@ const testSchema = new mongoose.Schema({
     required: true,
   },
   speed: {
+    //In words per minute
     type: Number,
     required: true,
   },
   accuracy: {
+    //In percentage
     type: Number,
     required: true,
   },

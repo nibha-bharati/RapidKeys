@@ -1,6 +1,10 @@
-const express = require("express")
-const connectDB = require("./config/db")    
-require("dotenv").config();
+import express from 'express';
+import connectDB from './config/db.js';
+
+import dotenv from 'dotenv';
+dotenv.config();
+
+import userRoutes from './routes/user_route.js';
 
 
 //creating express object
@@ -20,10 +24,10 @@ app.get("/",(req,res)=>{
     })
 })
 
-
+app.use('/users',userRoutes);
 
 //server
-PORT=process.env.PORT
+const PORT=process.env.PORT;
 app.listen(PORT, () => {
     console.log(`server running on port ${PORT}`);
   });

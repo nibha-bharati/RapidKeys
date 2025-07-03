@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "Typing app",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -17,8 +18,11 @@
   },
   "homepage": "https://github.com/nibha-bharati/RapidKeys#readme",
   "dependencies": {
+    "bcryptjs": "^3.0.2",
     "dotenv": "^17.0.1",
     "express": "^5.1.0",
-    "mongoose": "^8.16.1"
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.16.1",
+    "nodemon": "^3.1.10"
   }
 }

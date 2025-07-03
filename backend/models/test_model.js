@@ -8,7 +8,7 @@ const testSchema = new mongoose.Schema({
   },
   testTypeId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: "TestType",
     required: true,
   },
   speed: {

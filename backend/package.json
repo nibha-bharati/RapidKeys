@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "nodemon index.js",
-     "seed:200": "node script/add_200_words.js"
+    "seed:200": "node script/add_200_words.js"
   },
   "repository": {
     "type": "git",
@@ -21,6 +21,7 @@
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "body-parser": "^2.2.0",
+    "cors": "^2.8.5",
     "dotenv": "^17.0.1",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",

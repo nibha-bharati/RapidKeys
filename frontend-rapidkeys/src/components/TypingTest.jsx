@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from 'axios';
 
-const sampleText =  "Success is not final, failure is not fatal. It is the courage to continue that counts. Keep moving, even when the road seems unclear or endless.";
+// const sampleText =  "Success is not final, failure is not fatal. It is the courage to continue that counts. Keep moving, even when the road seems unclear or endless.";
 // const sampleText="ab";
 
 export default function TypingTest() {
@@ -10,6 +11,18 @@ export default function TypingTest() {
   const [accuracy, setAccuracy] = useState(100);
   const [mistakeCount, setMistakeCount] = useState(0);
   const [showResult, setShowResult] = useState(false);
+  const [sampleText, setSampleText]= useState("");
+
+  const getSentence = async()=>{
+    let sentence = await axios.get("http://localhost:3000/word/get-random")
+
+    setSampleText(sentence.data.sentence);
+
+  }
+
+  useEffect(()=>{
+    getSentence();
+  },[])
 
   const handleInputChange = (e) => {
     const value = e.target.value;
@@ -60,8 +73,7 @@ export default function TypingTest() {
   if (!showResult) {
     return (
       <div className="bg-black text-white p-6 rounded-lg space-y-8">
-        <h2 className="text-2xl text-[#006500] font-semibold">RapidKeys</h2>
-
+        
         <div
           className="text-3xl font-mono leading-relaxed break-words cursor-text"
           onClick={() => document.getElementById("hiddenInput").focus()}

@@ -2,6 +2,7 @@ import Navbar from "../components/Navbar";
 import TypingTest from "../components/TypingTest";
 import SettingsPanel from "../components/SettingsPanel";
 import StatsPreview from "../components/StatsPreview";
+import Footer from "../components/Footer";
 
 export default function HomePage() {
   return (
@@ -12,9 +13,7 @@ export default function HomePage() {
         <TypingTest />
         {/* <StatsPreview /> */}
       </main>
-      <footer className="text-center py-4 text-zinc-500 text-sm">
-        © 2025 RapidKeys • GitHub • Discord • Feedback
-      </footer>
+      <Footer/>
     </div>
   );
 }

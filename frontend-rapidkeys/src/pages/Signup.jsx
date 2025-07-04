@@ -1,8 +1,12 @@
 import { Link } from "react-router-dom";
+import Header from "../components/Header"
+import Footer from "../components/Footer";
 
 export default function Signup() {
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center px-4">
+    <>
+    <Header/>
+    <div className="min-h-[84.6vh] bg-black flex items-center justify-center px-4">
       <div className="bg-zinc-900 p-8 rounded-xl shadow-lg w-full max-w-md border border-zinc-800">
         <h2 className="text-2xl font-bold text-white mb-6 text-center">Create Your Account</h2>
 
@@ -50,5 +54,7 @@ export default function Signup() {
         </p>
       </div>
     </div>
+    <Footer/>
+    </>
   );
 }

@@ -32,10 +32,102 @@ export const getRandomWordsController = async (req, res) => {
     try {
       const words = await Word.aggregate([{ $sample: { size: 40 } }]);
   
+      const wordList = words.map(w => w.word.toLowerCase());
+
+      const sentence = wordList.join(" ");
+  
       res.status(200).json({
         success: true,
-        message: "Fetched random 40 words",
-        words,
+        message: "Sentence formed",
+        sentence: sentence       
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+      });
+    }
+  };
+
+  export const getTenRandomWordsController = async (req, res) => {
+    try {
+      const words = await Word.aggregate([{ $sample: { size: 10 } }]);
+  
+      const wordList = words.map(w => w.word.toLowerCase());
+
+      const sentence = wordList.join(" ");
+  
+      res.status(200).json({
+        success: true,
+        message: "Sentence formed",
+        sentence: sentence       
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+      });
+    }
+  };
+
+  export const getTwentyFiveRandomWordsController = async (req, res) => {
+    try {
+      const words = await Word.aggregate([{ $sample: { size: 25 } }]);
+  
+      const wordList = words.map(w => w.word.toLowerCase());
+
+      const sentence = wordList.join(" ");
+  
+      res.status(200).json({
+        success: true,
+        message: "Sentence formed",
+        sentence: sentence       
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+      });
+    }
+  };
+
+  export const getFiftyRandomWordsController = async (req, res) => {
+    try {
+      const words = await Word.aggregate([{ $sample: { size: 50 } }]);
+  
+      const wordList = words.map(w => w.word.toLowerCase());
+
+      const sentence = wordList.join(" ");
+  
+      res.status(200).json({
+        success: true,
+        message: "Sentence formed",
+        sentence: sentence       
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+      });
+    }
+  };
+
+  export const getHundredRandomWordsController = async (req, res) => {
+    try {
+      const words = await Word.aggregate([{ $sample: { size: 100 } }]);
+  
+      const wordList = words.map(w => w.word.toLowerCase());
+
+      const sentence = wordList.join(" ");
+  
+      res.status(200).json({
+        success: true,
+        message: "Sentence formed",
+        sentence: sentence       
       });
     } catch (error) {
       console.error(error);

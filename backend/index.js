@@ -34,6 +34,7 @@ app.use('/tests',testRoutes);
 app.use('/quotes',quoteRoutes);
 app.use('/word',wordRoutes)
 
+
 //server
 const PORT=process.env.PORT;
 app.listen(PORT, () => {

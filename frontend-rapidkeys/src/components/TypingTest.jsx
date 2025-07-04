@@ -71,7 +71,13 @@ export default function TypingTest() {
       const words = sampleText.trim().split(/\s+/).length;
       const acc = Math.round(((value.length - mistakeCount) / value.length) * 100);
 
-      setWpm(Math.round(words / duration));
+      const correctChars = value
+      .split("")
+      .filter((char, i) => char === sampleText[i])
+      .length;
+
+      const grossWpm = (correctChars / 5) / duration;
+      setWpm(Math.round(grossWpm));
       setAccuracy(acc);
       setShowResult(true);
     }

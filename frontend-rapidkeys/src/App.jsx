@@ -1,35 +1,20 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Navbar from "./components/Navbar";
+import TypingTest from "./components/TypingTest";
+import SettingsPanel from "./components/SettingsPanel";
+import StatsPreview from "./components/StatsPreview";
 
-function App() {
-  const [count, setCount] = useState(0)
-
+export default function App() {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="bg-zinc-900 text-white min-h-screen font-mono">
+      <Navbar />
+      <main className="max-w-4xl mx-auto px-4 py-8 space-y-8">
+        <TypingTest />
+        <SettingsPanel />
+        <StatsPreview />
+      </main>
+      <footer className="text-center py-4 text-zinc-500 text-sm">
+        © 2025 RapidKeys • GitHub • Discord • Feedback
+      </footer>
+    </div>
+  );
 }
-
-export default App

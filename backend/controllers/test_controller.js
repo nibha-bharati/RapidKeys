@@ -6,7 +6,7 @@ export const addTest = async (req, res) => {
     const test = await Test.create(req.body);
     res.status(201).json({ success: true, message: "New test added" });
   } catch (error) {
-    res.status(500).json({ success: false,message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -25,6 +25,6 @@ export const getTests = async (req, res) => {
         .json({ success: false, message: "Access to tests forbidden" });
     }
   } catch (error) {
-     res.status(500).json({ success: false,message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };

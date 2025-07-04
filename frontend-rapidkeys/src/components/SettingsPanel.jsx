@@ -1,8 +1,8 @@
-import { useState } from "react";
+import React from "react";
+import { useTypingContext } from "../context/typingContext"; // Adjust the path as needed
 
 export default function SettingsPanel() {
-  const [mode, setMode] = useState("time");
-  const [selectedOption, setSelectedOption] = useState("15");
+  const { mode, setMode, selectedOption, setSelectedOption } = useTypingContext();
 
   const modeClasses = (value) =>
     `px-3 py-1.5 rounded-md text-sm font-medium transition ${
@@ -17,7 +17,7 @@ export default function SettingsPanel() {
         ? "text-white font-bold"
         : "text-zinc-300 hover:bg-white hover:text-[#006500]"
     }`;
-
+    
   const renderOptions = () => {
     if (mode === "time") {
       return ["15", "30", "60"].map((opt) => (

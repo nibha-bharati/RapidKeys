@@ -7,9 +7,9 @@ export default function App() {
   return (
     <div className="bg-black text-white min-h-screen font-mono">
       <Navbar />
-      <main className="max-w-4xl mx-auto px-4 py-8 space-y-8 min-h-[80vh]">
+      <main className="max-w-4xl mx-auto px-4 py-8 space-y-8 min-h-[84vh]">
+         <SettingsPanel />
         <TypingTest />
-        <SettingsPanel />
         {/* <StatsPreview /> */}
       </main>
       <footer className="text-center py-4 text-zinc-500 text-sm">

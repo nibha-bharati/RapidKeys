@@ -1,27 +1,75 @@
+import { useState } from "react";
+
 export default function SettingsPanel() {
+  const [mode, setMode] = useState("time");
+  const [selectedOption, setSelectedOption] = useState("15");
+
+  const modeClasses = (value) =>
+    `px-3 py-1.5 rounded-md text-sm font-medium transition ${
+      mode === value
+        ? "text-white font-bold"
+        : "text-zinc-400 hover:bg-white hover:text-[#006500]"
+    }`;
+
+  const optionClasses = (value) =>
+    `px-2 py-1 rounded-md text-sm transition ${
+      selectedOption === value
+        ? "text-white font-bold"
+        : "text-zinc-300 hover:bg-white hover:text-[#006500]"
+    }`;
+
+  const renderOptions = () => {
+    if (mode === "time") {
+      return ["15", "30", "60"].map((opt) => (
+        <button
+          key={opt}
+          onClick={() => setSelectedOption(opt)}
+          className={optionClasses(opt)}
+        >
+          {opt}s
+        </button>
+      ));
+    }
+
+    if (mode === "words") {
+      return ["10", "25", "50", "100"].map((opt) => (
+        <button
+          key={opt}
+          onClick={() => setSelectedOption(opt)}
+          className={optionClasses(opt)}
+        >
+          {opt}
+        </button>
+      ));
+    }
+
+    return null; // quote has no options
+  };
+
   return (
-    <div className="flex gap-4 flex-wrap text-sm text-zinc-300">
-      <div>
-        Mode:
-        <select className="ml-2 bg-zinc-800 p-1 rounded">
-          <option>Time</option>
-          <option>Words</option>
-        </select>
-      </div>
-      <div>
-        Language:
-        <select className="ml-2 bg-zinc-800 p-1 rounded">
-          <option>English</option>
-          <option>Hindi</option>
-        </select>
-      </div>
-      <div>
-        Theme:
-        <select className="ml-2 bg-zinc-800 p-1 rounded">
-          <option>Dark</option>
-          <option>Light</option>
-          <option>Retro</option>
-        </select>
+    <div className="bg-[#006500] text-white p-2 rounded-lg flex justify-center opacity-80">
+      <div className="flex flex-wrap items-center gap-3 text-sm">
+        {/* Modes */}
+        {["time", "words", "quote"].map((m) => (
+          <button
+            key={m}
+            onClick={() => {
+              setMode(m);
+              if (m === "time") setSelectedOption("15");
+              else if (m === "words") setSelectedOption("10");
+              else setSelectedOption("");
+            }}
+            className={modeClasses(m)}
+          >
+            {m}
+          </button>
+        ))}
+
+        {/* Pipe Separator */}
+        {mode !== "quote" && <span className="text-zinc-500">|</span>}
+
+        {/* Mode-Specific Options */}
+        {mode !== "quote" && renderOptions()}
       </div>
     </div>
   );

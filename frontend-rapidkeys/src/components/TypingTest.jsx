@@ -14,7 +14,7 @@ export default function TypingTest() {
   const [sampleText, setSampleText]= useState("");
 
   const getSentence = async()=>{
-    let sentence = await axios.get("http://localhost:3000/word/get-random")
+    let sentence = await axios.get("http://localhost:3000/word/get-random-10")
 
     setSampleText(sentence.data.sentence);
 
@@ -73,7 +73,7 @@ export default function TypingTest() {
   if (!showResult) {
     return (
       <div className="bg-black text-white p-6 rounded-lg space-y-8">
-        
+        {/* {Date.now()} */}
         <div
           className="text-3xl font-mono leading-relaxed break-words cursor-text"
           onClick={() => document.getElementById("hiddenInput").focus()}

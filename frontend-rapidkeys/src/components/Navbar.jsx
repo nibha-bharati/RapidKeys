@@ -1,17 +1,15 @@
-
-
 export default function Navbar() {
   return (
-    <nav className="flex justify-between items-center px-6 py-4 border-b border-zinc-700">
-      <div className="text-xl font-bold tracking-wide" style={{color: "#05ab05"}}>
+    <nav className="flex justify-between items-center px-6 py-8 border-b border-zinc-700 bg-black">
+      <div className="text-2xl font-bold tracking-wide text-[#05ab05]">
         RapidKeys
       </div>
-      <div className="space-x-4 text-sm">
-        <button className="hover:text-yellow-400">Home</button>
-        <button className="hover:text-yellow-400">Test</button>
-        <button className="hover:text-yellow-400">Stats</button>
-        <button className="hover:text-yellow-400">Login</button>
-        <button className="hover:text-yellow-400">Signup</button>
+      <div className="space-x-6 text-lg text-white">
+        <button className="hover:text-[#05ab05]">Home</button>
+        <button className="hover:text-[#05ab05]">Test</button>
+        <button className="hover:text-[#05ab05]">Stats</button>
+        <button className="hover:text-[#05ab05]">Login</button>
+        <button className="hover:text-[#05ab05]">Signup</button>
       </div>
     </nav>
   );

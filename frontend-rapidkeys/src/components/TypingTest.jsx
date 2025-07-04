@@ -1,29 +1,36 @@
 import { useState, useEffect } from "react";
 
-const sampleText = "The quick brown fox jumps over the lazy dog.";
+// const sampleText = "The quick brown fox jumps over the lazy dog.";
+const sampleText =  "Success is not final, failure is not fatal. It is the courage to continue that counts. Keep moving, even when the road seems unclear or endless.";
 
 export default function TypingTest() {
   const [input, setInput] = useState("");
   const [startTime, setStartTime] = useState(null);
   const [wpm, setWpm] = useState(0);
+  const [accuracy, setAccuracy] = useState(100);
+  const [showResult, setShowResult] = useState(false);
 
   useEffect(() => {
     if (input.length === 1 && !startTime) {
       setStartTime(Date.now());
     }
 
-    if (input === sampleText) {
+    if (input.length === sampleText.length) {
       const duration = (Date.now() - startTime) / 1000 / 60;
-      const words = sampleText.split(" ").length;
+      const words = sampleText.trim().split(/\s+/).length;
+      const correctChars = sampleText
+        .split("")
+        .filter((char, i) => char === input[i]).length;
+
       setWpm(Math.round(words / duration));
+      setAccuracy(Math.round((correctChars / sampleText.length) * 100));
+      setShowResult(true);
     }
   }, [input]);
 
   const getCharClass = (char, index) => {
     if (index < input.length) {
-      return char === input[index]
-        ? "text-[#006500]"
-        : "text-red-500";
+      return char === input[index] ? "text-[#006500]" : "text-red-500";
     }
     if (index === input.length) {
       return "underline decoration-dashed decoration-2";
@@ -31,33 +38,67 @@ export default function TypingTest() {
     return "text-gray-500";
   };
 
+  // === Typing Screen ===
+  if (!showResult) {
+    return (
+      <div className="bg-black text-white p-6 rounded-lg space-y-8">
+        {/* <h2 className="text-2xl text-[#006500] font-semibold">RapidKeys</h2> */}
+
+        <div
+          className="text-3xl font-mono leading-relaxed break-words cursor-text"
+          onClick={() => document.getElementById("hiddenInput").focus()}
+        >
+          {sampleText.split("").map((char, idx) => (
+            <span key={idx} className={getCharClass(char, idx)}>
+              {char}
+            </span>
+          ))}
+        </div>
+
+        <input
+          id="hiddenInput"
+          type="text"
+          autoFocus
+          className="absolute opacity-0"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+        />
+      </div>
+    );
+  }
+
+  // === Result Screen ===
   return (
-    <div className="bg-black text-white p-6 rounded-lg space-y-6">
-      <div
-        className="text-2xl font-mono leading-relaxed break-words"
-        onClick={() => document.getElementById("hiddenInput").focus()}
+    <div className="bg-black text-white p-6 rounded-lg space-y-6 min-h-[60vh] flex flex-col items-center justify-center">
+      <h2 className="text-3xl font-bold text-[#006500] mb-4">
+        Test Completed 🎉
+      </h2>
+
+      <div className="text-xl text-gray-300 space-y-2 text-center">
+        <p>
+          <strong>WPM:</strong> <span className="text-[#006500]">{wpm}</span>
+        </p>
+        <p>
+          <strong>Accuracy:</strong>{" "}
+          <span className="text-[#006500]">{accuracy}%</span>
+        </p>
+        <p>
+          <strong>Characters Typed:</strong> {input.length}
+        </p>
+      </div>
+
+      <button
+        className="mt-6 px-6 py-2 bg-[#006500] hover:bg-green-700 text-white rounded-lg"
+        onClick={() => {
+          setInput("");
+          setStartTime(null);
+          setWpm(0);
+          setAccuracy(100);
+          setShowResult(false);
+        }}
       >
-        {sampleText.split("").map((char, idx) => (
-          <span key={idx} className={getCharClass(char, idx)}>
-            {char}
-          </span>
-        ))}
-      </div>
-
-      {/* Hidden input captures real keystrokes */}
-      <input
-        id="hiddenInput"
-        type="text"
-        autoFocus
-        className="absolute opacity-0"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-      />
-
-      <div className="text-sm text-gray-400 flex gap-4">
-        <span>WPM: {wpm}</span>
-        <span>Characters: {input.length}</span>
-      </div>
+        Restart Test
+      </button>
     </div>
   );
 }

@@ -1,32 +1,50 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
-// const sampleText = "The quick brown fox jumps over the lazy dog.";
 const sampleText =  "Success is not final, failure is not fatal. It is the courage to continue that counts. Keep moving, even when the road seems unclear or endless.";
+// const sampleText="ab";
 
 export default function TypingTest() {
   const [input, setInput] = useState("");
   const [startTime, setStartTime] = useState(null);
   const [wpm, setWpm] = useState(0);
   const [accuracy, setAccuracy] = useState(100);
+  const [mistakeCount, setMistakeCount] = useState(0);
   const [showResult, setShowResult] = useState(false);
 
-  useEffect(() => {
-    if (input.length === 1 && !startTime) {
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+
+    // Start timer on first keypress
+    if (value.length === 1 && !startTime) {
       setStartTime(Date.now());
     }
 
-    if (input.length === sampleText.length) {
+    // Count mistake on the newly typed character
+    if (
+      value.length > input.length // only forward typing
+    ) {
+      const newIndex = value.length - 1;
+      const newChar = value[newIndex];
+      const expectedChar = sampleText[newIndex];
+
+      if (newChar !== expectedChar) {
+        setMistakeCount((prev) => prev + 1);
+      }
+    }
+
+    setInput(value);
+
+    // When test completes
+    if (value.length === sampleText.length) {
       const duration = (Date.now() - startTime) / 1000 / 60;
       const words = sampleText.trim().split(/\s+/).length;
-      const correctChars = sampleText
-        .split("")
-        .filter((char, i) => char === input[i]).length;
+      const acc = Math.round(((value.length - mistakeCount) / value.length) * 100);
 
       setWpm(Math.round(words / duration));
-      setAccuracy(Math.round((correctChars / sampleText.length) * 100));
+      setAccuracy(acc);
       setShowResult(true);
     }
-  }, [input]);
+  };
 
   const getCharClass = (char, index) => {
     if (index < input.length) {
@@ -42,7 +60,7 @@ export default function TypingTest() {
   if (!showResult) {
     return (
       <div className="bg-black text-white p-6 rounded-lg space-y-8">
-        {/* <h2 className="text-2xl text-[#006500] font-semibold">RapidKeys</h2> */}
+        <h2 className="text-2xl text-[#006500] font-semibold">RapidKeys</h2>
 
         <div
           className="text-3xl font-mono leading-relaxed break-words cursor-text"
@@ -61,7 +79,7 @@ export default function TypingTest() {
           autoFocus
           className="absolute opacity-0"
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={handleInputChange}
         />
       </div>
     );
@@ -70,17 +88,19 @@ export default function TypingTest() {
   // === Result Screen ===
   return (
     <div className="bg-black text-white p-6 rounded-lg space-y-6 min-h-[60vh] flex flex-col items-center justify-center">
-      <h2 className="text-3xl font-bold text-[#006500] mb-4">
-        Test Completed 🎉
-      </h2>
+      <h2 className="text-3xl font-bold text-[#006500] mb-4">Test Completed 🎉</h2>
 
       <div className="text-xl text-gray-300 space-y-2 text-center">
         <p>
-          <strong>WPM:</strong> <span className="text-[#006500]">{wpm}</span>
+          <strong>WPM:</strong>{" "}
+          <span className="text-[#006500]">{wpm}</span>
         </p>
         <p>
           <strong>Accuracy:</strong>{" "}
           <span className="text-[#006500]">{accuracy}%</span>
+        </p>
+        <p>
+          <strong>Total Mistakes:</strong> {mistakeCount}
         </p>
         <p>
           <strong>Characters Typed:</strong> {input.length}
@@ -94,6 +114,7 @@ export default function TypingTest() {
           setStartTime(null);
           setWpm(0);
           setAccuracy(100);
+          setMistakeCount(0);
           setShowResult(false);
         }}
       >
@@ -102,3 +123,4 @@ export default function TypingTest() {
     </div>
   );
 }
+

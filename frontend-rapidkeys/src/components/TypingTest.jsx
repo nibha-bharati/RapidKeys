@@ -1,45 +1,64 @@
 import { useEffect, useState } from "react";
-import axios from 'axios';
-
-// const sampleText =  "Success is not final, failure is not fatal. It is the courage to continue that counts. Keep moving, even when the road seems unclear or endless.";
-// const sampleText="ab";
+import axios from "axios";
+import { useTypingContext } from "../context/typingContext"; 
 
 export default function TypingTest() {
+  const { mode, selectedOption } = useTypingContext();
+
   const [input, setInput] = useState("");
   const [startTime, setStartTime] = useState(null);
   const [wpm, setWpm] = useState(0);
   const [accuracy, setAccuracy] = useState(100);
   const [mistakeCount, setMistakeCount] = useState(0);
   const [showResult, setShowResult] = useState(false);
-  const [sampleText, setSampleText]= useState("");
+  const [sampleText, setSampleText] = useState("");
 
-  const getSentence = async()=>{
-    let sentence = await axios.get("http://localhost:3000/word/get-random-10")
+  const getSentence = async () => {
+    try {
+      console.log(selectedOption)
+      let response;
 
-    setSampleText(sentence.data.sentence);
+      if (mode === "time") {
+        response = await axios.get(`http://localhost:3000/word/get-random`);
+        setSampleText(response.data.sentence); 
+      } else if (mode === "words") {
+        response = await axios.get(`http://localhost:3000/word/get-random-${selectedOption}`);
+        setSampleText(response.data.sentence);
+      } else if (mode === "quote") {
+        response = await axios.get("http://localhost:3000/quotes/get");
+        setSampleText(response.data.quote);
+      }
+    } catch (err) {
+      console.error("Error fetching sentence:", err);
+      setSampleText("Error loading content...");
+    }
+  };
 
-  }
-
-  useEffect(()=>{
+  useEffect(() => {
     getSentence();
-  },[])
+    resetTestState();
+  }, [mode, selectedOption]);
+
+  const resetTestState = () => {
+    setInput("");
+    setStartTime(null);
+    setWpm(0);
+    setAccuracy(100);
+    setMistakeCount(0);
+    setShowResult(false);
+  };
 
   const handleInputChange = (e) => {
     const value = e.target.value;
 
-    // Start timer on first keypress
     if (value.length === 1 && !startTime) {
       setStartTime(Date.now());
     }
 
-    // Count mistake on the newly typed character
-    if (
-      value.length > input.length // only forward typing
-    ) {
+    if (value.length > input.length) {
       const newIndex = value.length - 1;
       const newChar = value[newIndex];
       const expectedChar = sampleText[newIndex];
-
       if (newChar !== expectedChar) {
         setMistakeCount((prev) => prev + 1);
       }
@@ -47,7 +66,6 @@ export default function TypingTest() {
 
     setInput(value);
 
-    // When test completes
     if (value.length === sampleText.length) {
       const duration = (Date.now() - startTime) / 1000 / 60;
       const words = sampleText.trim().split(/\s+/).length;
@@ -69,11 +87,9 @@ export default function TypingTest() {
     return "text-gray-500";
   };
 
-  // === Typing Screen ===
   if (!showResult) {
     return (
       <div className="bg-black text-white p-6 rounded-lg space-y-8">
-        {/* {Date.now()} */}
         <div
           className="text-3xl font-mono leading-relaxed break-words cursor-text"
           onClick={() => document.getElementById("hiddenInput").focus()}
@@ -97,7 +113,6 @@ export default function TypingTest() {
     );
   }
 
-  // === Result Screen ===
   return (
     <div className="bg-black text-white p-6 rounded-lg space-y-6 min-h-[60vh] flex flex-col items-center justify-center">
       <h2 className="text-3xl font-bold text-[#006500] mb-4">Test Completed 🎉</h2>
@@ -122,12 +137,8 @@ export default function TypingTest() {
       <button
         className="mt-6 px-6 py-2 bg-[#006500] hover:bg-green-700 text-white rounded-lg"
         onClick={() => {
-          setInput("");
-          setStartTime(null);
-          setWpm(0);
-          setAccuracy(100);
-          setMistakeCount(0);
-          setShowResult(false);
+          getSentence();
+          resetTestState();
         }}
       >
         Restart Test
@@ -135,4 +146,3 @@ export default function TypingTest() {
     </div>
   );
 }
-

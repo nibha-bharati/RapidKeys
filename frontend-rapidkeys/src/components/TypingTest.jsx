@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { useTypingContext } from "../context/typingContext"; 
+import { useTypingContext } from "../context/typingContext";
 
 export default function TypingTest() {
   const { mode, selectedOption } = useTypingContext();
 
   const [input, setInput] = useState("");
+  const inputRef = useRef("");
+
   const [startTime, setStartTime] = useState(null);
   const [wpm, setWpm] = useState(0);
   const [accuracy, setAccuracy] = useState(100);
@@ -13,14 +15,17 @@ export default function TypingTest() {
   const [showResult, setShowResult] = useState(false);
   const [sampleText, setSampleText] = useState("");
 
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [timerId, setTimerId] = useState(null);
+  const [duration, setDuration] = useState(0);
+
   const getSentence = async () => {
     try {
-      console.log(selectedOption)
       let response;
 
       if (mode === "time") {
         response = await axios.get(`http://localhost:3000/word/get-random`);
-        setSampleText(response.data.sentence); 
+        setSampleText(response.data.sentence);
       } else if (mode === "words") {
         response = await axios.get(`http://localhost:3000/word/get-random-${selectedOption}`);
         setSampleText(response.data.sentence);
@@ -35,26 +40,71 @@ export default function TypingTest() {
   };
 
   useEffect(() => {
+    if (mode === "time") {
+      const timeMap = {
+        "15": 15,
+        "30": 30,
+        "60": 60,
+      };
+      setDuration(timeMap[selectedOption] || 60);
+    }
+
     getSentence();
     resetTestState();
   }, [mode, selectedOption]);
 
   const resetTestState = () => {
     setInput("");
+    inputRef.current = "";
     setStartTime(null);
     setWpm(0);
     setAccuracy(100);
     setMistakeCount(0);
     setShowResult(false);
+    setTimeLeft(0);
+
+    if (timerId) clearInterval(timerId);
   };
 
-  const handleInputChange = (e) => {
-    const value = e.target.value;
+  const calculateResults = (typed, expected, durationMin,mistakeCount) => {
+    let correct = 0;
 
-    if (value.length === 1 && !startTime) {
-      setStartTime(Date.now());
+    for (let i = 0; i < typed.length; i++) {
+      if (typed[i] === expected[i]) {
+        correct++;
+      }
     }
 
+    const acc = typed.length > 0 ? Math.round(((typed.length-mistakeCount) / typed.length) * 100) : 0;
+    const grossWpm = (correct / 5) / durationMin;
+
+    return { acc, grossWpm };
+  };
+  
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    inputRef.current = value;
+    
+    if (value.length === 1 && !startTime) {
+      const now = Date.now();
+      setStartTime(now);
+      
+      if (mode === "time") {
+        setTimeLeft(duration);
+        const intervalId = setInterval(() => {
+          setTimeLeft((prev) => {
+            if (prev === 1) {
+              clearInterval(intervalId);
+              handleAutoSubmit();
+            }
+            return prev - 1;
+          });
+        }, 1000);
+        setTimerId(intervalId);
+      }
+    }
+    
+    // Track real-time mistakes
     if (value.length > input.length) {
       const newIndex = value.length - 1;
       const newChar = value[newIndex];
@@ -63,26 +113,31 @@ export default function TypingTest() {
         setMistakeCount((prev) => prev + 1);
       }
     }
-
+    
     setInput(value);
-
-    if (value.length === sampleText.length) {
-      const duration = (Date.now() - startTime) / 1000 / 60;
-      const words = sampleText.trim().split(/\s+/).length;
-      const acc = Math.round(((value.length - mistakeCount) / value.length) * 100);
-
-      const correctChars = value
-      .split("")
-      .filter((char, i) => char === sampleText[i])
-      .length;
-
-      const grossWpm = (correctChars / 5) / duration;
+    
+    if (mode !== "time" && value.length === sampleText.length) {
+      const durationMin = (Date.now() - startTime) / 1000 / 60;
+      const { acc, grossWpm } = calculateResults(value, sampleText, durationMin,mistakeCount);
+      
       setWpm(Math.round(grossWpm));
       setAccuracy(acc);
       setShowResult(true);
     }
   };
-
+  
+  
+    const handleAutoSubmit = () => {
+      const typedValue = inputRef.current;
+      const elapsed = duration / 60;
+  
+      const { acc, grossWpm } = calculateResults(typedValue, sampleText, elapsed, mistakeCount);
+  
+      setInput(typedValue);
+      setWpm(Math.round(grossWpm));
+      setAccuracy(isNaN(acc) ? 0 : acc);
+      setShowResult(true);
+    };
   const getCharClass = (char, index) => {
     if (index < input.length) {
       return char === input[index] ? "text-[#006500]" : "text-red-500";
@@ -96,6 +151,12 @@ export default function TypingTest() {
   if (!showResult) {
     return (
       <div className="bg-black text-white p-6 rounded-lg space-y-8">
+        {mode === "time" && startTime && (
+          <div className="text-yellow-400 font-bold text-xl">
+            ⏱️ Time Left: {timeLeft}s
+          </div>
+        )}
+
         <div
           className="text-3xl font-mono leading-relaxed break-words cursor-text"
           onClick={() => document.getElementById("hiddenInput").focus()}
@@ -121,7 +182,9 @@ export default function TypingTest() {
 
   return (
     <div className="bg-black text-white p-6 rounded-lg space-y-6 min-h-[60vh] flex flex-col items-center justify-center">
-      <h2 className="text-3xl font-bold text-[#006500] mb-4">Test Completed 🎉</h2>
+      <h2 className="text-3xl font-bold text-[#006500] mb-4">
+        Test Completed 🎉
+      </h2>
 
       <div className="text-xl text-gray-300 space-y-2 text-center">
         <p>

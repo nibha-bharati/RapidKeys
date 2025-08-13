@@ -1,5 +1,10 @@
 import { Link } from "react-router-dom";
 
+function Logout(){
+     localStorage.removeItem("authToken");
+    navigate("/");
+}
+
 export default function Navbar() {
   return (
     <nav className="flex justify-between items-center px-6 py-8 border-b border-zinc-700 bg-black">
@@ -12,6 +17,7 @@ export default function Navbar() {
         <button className="hover:text-[#05ab05]">Stats</button>
         <Link to={"/login"} className="hover:text-[#05ab05]">Login</Link>
         <Link to={"/signup"} className="hover:text-[#05ab05]">Signup</Link>
+        <button onClick={Logout}>Logout</button>
       </div>
     </nav>
   );
